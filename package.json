@@ -1,0 +1,25 @@
+{
+  "name": "social-socket",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon index.ts"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^20.1.4",
+    "nodemon": "^2.0.22",
+    "tsconfig-paths": "^4.2.0",
+    "typescript": "^5.0.4"
+  },
+  "dependencies": {
+    "dotenv": "^16.0.3",
+    "redis": "^4.6.6",
+    "reflect-metadata": "^0.1.13",
+    "socket.io": "^4.6.1",
+    "ts-node": "^10.9.1"
+  }
+}
