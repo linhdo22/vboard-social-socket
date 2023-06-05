@@ -1,13 +1,18 @@
 import { Server } from "socket.io";
+import { listen } from "./listen";
 
-const io = new Server(8000, {
-//   path: "socket",
+export const io = new Server(8000, {
   cors: {
     origin: "*",
   },
 });
+listen();
 
 io.on("connection", (socket) => {
-  console.log(socket.id);
-  socket.send(socket.id);
+  const userId = socket.handshake.auth.token;
+  socket.join(userId + "");
+  console.log(
+    "User " + socket.handshake.auth.token + " connected " + socket.id
+  );
+  socket.emit("message", userId);
 });
