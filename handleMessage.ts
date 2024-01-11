@@ -1,4 +1,3 @@
-import { Server, Socket } from "socket.io";
 import { io } from ".";
 import { MESSAGE_TYPE } from "./constants";
 
@@ -10,7 +9,7 @@ type MessageType = {
 export const handleMessage = async (message: string) => {
   try {
     const data: MessageType = JSON.parse(message);
-    console.log(data);
+    console.log(data.type, data.toUserId);
     io.to(data.toUserId + "").emit("message", data);
   } catch (error) {
     console.log(error);
