@@ -29,6 +29,7 @@ const startLive = (groupId: string, hostId: number) => {
 const offLive = (groupId: string) => {
   checkExist(groupId);
   groupMap[groupId].isLive = false;
+  groupMap[groupId].hostId = undefined;
   groupMap[groupId].participants = [];
 };
 const joinLive = (groupId: string, userId: number) => {
@@ -85,6 +86,7 @@ export const handleGroupLive = ({
       groupId: string,
       cb: (payload: { participants?: number[]; hostId?: number }) => void
     ) => {
+      console.log(getGroupState(groupId));
       socket.join(`live-${groupId}`);
       joinLive(groupId, userId);
       socket.to(`live-${groupId}`).emit("user-join");
@@ -98,13 +100,18 @@ export const handleGroupLive = ({
       const gState = getGroupState(groupId);
       if (gState.hostId === userId) {
         offLive(groupId);
-        socket.to(groupId).emit("off-live");
+        io.to(groupId).emit("off-live");
         io.in(groupId).socketsLeave(`live-${groupId}`);
       } else {
         socket.leave(`live-${groupId}`);
         leaveLive(groupId, userId);
         socket.to(`live-${groupId}`).emit("user-leave");
       }
+      if (gState.participants.length === 0) {
+        gState.isLive = false;
+        gState.hostId = undefined;
+      }
+      console.log(getGroupState(groupId));
     }
   );
   socket.on("send-live-data", (groupId: string, data: string) => {
@@ -129,6 +136,7 @@ export const handleGroupLive = ({
   return () => {
     if (currentGroup) {
       const gState = getGroupState(currentGroup);
+      console.log(getGroupState);
       if (gState.hostId === userId) {
         offLive(currentGroup);
         socket.to(currentGroup).emit("off-live");
